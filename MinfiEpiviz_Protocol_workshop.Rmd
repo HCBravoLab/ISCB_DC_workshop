@@ -37,6 +37,12 @@ The researchers identified 110 genes that were differentially methylated in the 
 
 In breast tissues, it was found that this CpG island was hypo-methylated methylation, and in other tissues, including colon and lung, it has full methylation. These results were found analyzing Illumina-Infinium HumanMethylation27 array data.  TRIM29 expression was higher in normal breast tissues than in other normal tissues tested. The main conclusion proposed by authors was that, "Epigenetic alterations affecting tissue-specific differentiation are the predominant mechanism by which epigenetic changes cause cancer^1^." Although the findings of the research were interesting, the paper lacked good visualizations of the 450k Illumina Human Methylation data, and the goal of this protocol is to provide a better one that can also be used to view other genes of interest in any cancer type, as the data is available for the whole genome.
 
+## 0. Preliminaries on R/Bioconductor
+
+The R programming language is becoming the tool of choice for exploratory and data analysis in genomics. A major reason for that is the large [Bioconductor](http://bioconductor.org/) project, which provides software infrastructure for many common genomics data analysis tasks, and hosts a large number of third-party contributed data analysis tools and methods. For modern large-scale genomics data analysis, a large number of the state-of-the-art methods are implemented as R packages hosted by the Bioconductor project.
+The Bioconductor project also provides a lot of materials for learning how to use packages and infrastructure: [Bioconductor courses and conferences](http://bioconductor.org/help/course-materials/)
+The Bioconductor community is vibrant and active, including both users and software developers. [Bioconductor support site](https://support.bioconductor.org/)
+
 ## 1. Getting Started
 
 Install the needed packages in R: Bioconductor, minfi, epivizr, GenomicFeatures, BSgenome.Hsapiens.UCSC.hg19, TxDb.Hsapiens.UCSC.hg19.knownGene, IlluminaHumanMethylation450kmanifest, IlluminaHumanMethylation450kanno.ilmn12.hg19, and doParallel  
@@ -327,6 +333,24 @@ memory.limit(size=10000)
 meth.set <- preprocessIllumina(rg.set)
 gen.meth.set <- mapToGenome(meth.set)
 gen.rat.set <- ratioConvert(gen.meth.set,type="Illumina")
+```
+
+Alternatively, these datasets can be read in from .csv files located on Github.
+
+```{r,eval=F,results="hide"}
+library(RCurl)
+
+meth.set.URL <- getURL("https://raw.githubusercontent.com/
+  HCBravoLab/ISCB_DC_workshop/master/data/methset_data.csv")
+meth.set <- read.delim(text=meth.set.URL,sep="\t",stringsAsFactors=FALSE)
+
+gen.meth.set.URL <- getURL("https://raw.githubusercontent.com/HCBravoLab/
+  ISCB_DC_workshop/master/data/genmethset_data.csv")
+gen.meth.set <- read.delim(text=gen.meth.set.URL,sep="\t",stringsAsFactors=FALSE)
+
+gen.rat.set.URL <- getURL("https://raw.githubusercontent.com/HCBravoLab/
+  ISCB_DC_workshop/master/data/genratset_data.csv")
+gen.rat.set <- read.delim(text=gen.rat.set.URL,sep="\t",stringsAsFactors=FALSE)
 ```
 
 ## 4. DMP Visualization
