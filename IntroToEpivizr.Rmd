@@ -284,6 +284,10 @@ eset_chart <- app$plot(apColonData, datasource_name="MAPlot", columns=c("colonA"
 
 In this case, we specify which data is displayed in each axis of the scatter plot using the `columns` argument. The `assay` arguments indicates where data is obtained.
 
+```{r, eval=TRUE}
+app$chart_mgr$rm_chart(eset_chart)
+```
+
 ### The RangedSummarizedExperiment Object
 
 `Epiviz` is also able to display plots of data in the form of a `RangedSummarizedExperiment` object. After loading the `tcga_colon_expression` dataset in the `epivizrData` package, we can see that this object contains information on 239322 exons in 40 samples.
