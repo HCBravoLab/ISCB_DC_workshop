@@ -137,6 +137,14 @@ app$chart_mgr$list_chart_types()
 
 Chart type settings, e.g., line widths, colors, margins etc. can be modified dynamically. Settings available for each chart type are briefly listed in this call. See below for further detail on customizing charts through settings and colors.
 
+```{r}
+app$chart_mgr$print_chart_type_info('BlocksTrack')
+```
+
+```{r}
+app$chart_mgr$list_chart_type_settings('LinePlot')
+```
+
 ### Adding block region devices
 
 Once the browser is open we can visualize the `tcga_colon_blocks` object containing blocks of methylation modifications in colon cancer.
@@ -190,7 +198,7 @@ regions can be before they are merged into a single rectangle in the chart. We c
 ```{r, eval=TRUE}
 settings <- list(minBlockDistance=50)
 colors <- c("#d15014", "#5e97eb", "#e81ccd")
-blocks_chart <- app$plot(tcga_colon_blocks, datasource_name="450k colon_blocks", settings=settings, colors=colors)
+blocks_chart_wset <- app$plot(tcga_colon_blocks, datasource_name="450k colon_blocks", settings=settings, colors=colors)
 ```
 
 This will create a second blocks track using a different color map.
@@ -201,14 +209,14 @@ On the other hand, if the `BlockChart` is already added to the epiviz JS applica
 # create a list of settings and colors to update the plot
 settings <- list(minBlockDistance=100)
 colors <- c("#5e97eb", "#d15014", "#e81ccd")
-app$chart_mgr$set_chart_settings(blocks_chart, settings=settings, colors=colors)
+app$chart_mgr$set_chart_settings(blocks_chart_wset, settings=settings, colors=colors)
 ```
 
 This changes the color map for the second blocks track added. Use the `print_chart_info` method to list settings and colors currently used in the chart.
 
 ```{r}
 # to list applied chart settings
-app$chart_mgr$print_chart_info(blocks_chart)
+app$chart_mgr$print_chart_info(blocks_chart_wset)
 ```
 
 Methods are also available directly on the `EpivizChart` objects. E.g., calls `blocks_chart$set(settings=settings, colors=colors)`
@@ -219,7 +227,7 @@ and `blocks_chart$print_info()` yield the same result.
 Charts can be printed as a pdf or png file through the epivizr session. To do so, use the `print_chart` method:
 
 ```{r, eval=TRUE}
-app$chart_mgr$print_chart(blocks_chart, file_name="blocks_chart", file_type="pdf")
+app$chart_mgr$print_chart(blocks_chart_wset, file_name="blocks_chart", file_type="pdf")
 ```
 
 This will create a file named `blocks_chart.pdf` which will be downloaded through your web browser. It will be found in the default file download location for your web browser.

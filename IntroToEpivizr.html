@@ -184,6 +184,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3>The epivizr app</h3>
 <p>The connection to <code>Epiviz</code> is managed through a session manager object of class <code>EpivizApp</code>. We can create this object and open <code>Epiviz</code> using the <code>startEpiviz</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">app &lt;-<span class="st"> </span><span class="kw">startEpiviz</span>(<span class="dt">workspace=</span><span class="st">&quot;qyOTB6vVnff&quot;</span>, <span class="dt">gists=</span><span class="st">&quot;2caf8e891201130c7daa&quot;</span>)</code></pre></div>
+<pre><code>## .</code></pre>
 <p>This opens a websocket connection between the interactive <code>R</code> session and the browser client. This will allow us to visualize data stored in the <code>Epiviz</code> server along with data in the interactive <code>R</code> session.</p>
 <hr />
 <p><em>Windows users:</em> In Windows platforms we need to use the <code>service</code> function to let the interactive <code>R</code> session connect to the <code>epiviz</code> web app and serve data requests. We then escape (using <code>ctl-c</code> or <code>esc</code> depending on your environment) to continue with the interactive <code>R</code> session. This is required anytime you want <code>epivizr</code> to serve data to the web app, for example, when interacting with the UI. (We are actively developing support for non-blocking sessions in Windows platforms).</p>
@@ -207,6 +208,25 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 2          8
 ## 3         10</code></pre>
 <p>Chart type settings, e.g., line widths, colors, margins etc. can be modified dynamically. Settings available for each chart type are briefly listed in this call. See below for further detail on customizing charts through settings and colors.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">app$chart_mgr$<span class="kw">print_chart_type_info</span>(<span class="st">'BlocksTrack'</span>)</code></pre></div>
+<pre><code>## Settings for chart type  BlocksTrack 
+##                 id                  label default_value possible_values
+## 1            title                  Title                              
+## 2        marginTop             Top margin            25                
+## 3     marginBottom          Bottom margin            23                
+## 4       marginLeft            Left margin            20                
+## 5      marginRight           Right margin            10                
+## 6 minBlockDistance Minimum block distance             5                
+##     type
+## 1 string
+## 2 number
+## 3 number
+## 4 number
+## 5 number
+## 6 number
+## Colors: #1f77b4, #ff7f0e, #2ca02c, #d62728, #9467bd, #8c564b, #e377c2, #7f7f7f, #bcbd22, #17becf</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">app$chart_mgr$<span class="kw">list_chart_type_settings</span>(<span class="st">'LinePlot'</span>)</code></pre></div>
+<pre><code>## data frame with 0 columns and 0 rows</code></pre>
 </div>
 <div id="adding-block-region-devices" class="section level3">
 <h3>Adding block region devices</h3>
@@ -250,16 +270,16 @@ app$<span class="kw">update_measurements</span>(ms_obj, tcga_colon_blocks[keep,]
 <p>If using the <code>plot</code> method, use the <code>list_chart_settings</code> method as above to list settings that can be applied to a chart type. For example, for a <code>BlocksTrack</code> chart, we can set <code>minBlockDistance</code> as a setting for the plot function which controls how close genomic regions can be before they are merged into a single rectangle in the chart. We can also change colors used in the chart this way.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">settings &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">minBlockDistance=</span><span class="dv">50</span>)
 colors &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;#d15014&quot;</span>, <span class="st">&quot;#5e97eb&quot;</span>, <span class="st">&quot;#e81ccd&quot;</span>)
-blocks_chart &lt;-<span class="st"> </span>app$<span class="kw">plot</span>(tcga_colon_blocks, <span class="dt">datasource_name=</span><span class="st">&quot;450k colon_blocks&quot;</span>, <span class="dt">settings=</span>settings, <span class="dt">colors=</span>colors)</code></pre></div>
+blocks_chart_wset &lt;-<span class="st"> </span>app$<span class="kw">plot</span>(tcga_colon_blocks, <span class="dt">datasource_name=</span><span class="st">&quot;450k colon_blocks&quot;</span>, <span class="dt">settings=</span>settings, <span class="dt">colors=</span>colors)</code></pre></div>
 <p>This will create a second blocks track using a different color map.</p>
 <p>On the other hand, if the <code>BlockChart</code> is already added to the epiviz JS application session, use the <code>set_chart_settings</code> method to update settings and colors.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># create a list of settings and colors to update the plot</span>
 settings &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">minBlockDistance=</span><span class="dv">100</span>)
 colors &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;#5e97eb&quot;</span>, <span class="st">&quot;#d15014&quot;</span>, <span class="st">&quot;#e81ccd&quot;</span>)
-app$chart_mgr$<span class="kw">set_chart_settings</span>(blocks_chart, <span class="dt">settings=</span>settings, <span class="dt">colors=</span>colors)</code></pre></div>
+app$chart_mgr$<span class="kw">set_chart_settings</span>(blocks_chart_wset, <span class="dt">settings=</span>settings, <span class="dt">colors=</span>colors)</code></pre></div>
 <p>This changes the color map for the second blocks track added. Use the <code>print_chart_info</code> method to list settings and colors currently used in the chart.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># to list applied chart settings</span>
-app$chart_mgr$<span class="kw">print_chart_info</span>(blocks_chart)</code></pre></div>
+app$chart_mgr$<span class="kw">print_chart_info</span>(blocks_chart_wset)</code></pre></div>
 <pre><code>## Chart settings for chart id  epivizChart_2 :
 ##                 id                  label default_value possible_values
 ## 1            title                  Title                              
@@ -281,7 +301,7 @@ app$chart_mgr$<span class="kw">print_chart_info</span>(blocks_chart)</code></pre
 <div id="printing-charts" class="section level3">
 <h3>Printing charts</h3>
 <p>Charts can be printed as a pdf or png file through the epivizr session. To do so, use the <code>print_chart</code> method:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">app$chart_mgr$<span class="kw">print_chart</span>(blocks_chart, <span class="dt">file_name=</span><span class="st">&quot;blocks_chart&quot;</span>, <span class="dt">file_type=</span><span class="st">&quot;pdf&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">app$chart_mgr$<span class="kw">print_chart</span>(blocks_chart_wset, <span class="dt">file_name=</span><span class="st">&quot;blocks_chart&quot;</span>, <span class="dt">file_type=</span><span class="st">&quot;pdf&quot;</span>)</code></pre></div>
 <p>This will create a file named <code>blocks_chart.pdf</code> which will be downloaded through your web browser. It will be found in the default file download location for your web browser.</p>
 </div>
 <div id="adding-line-plots-along-the-genome" class="section level3">
